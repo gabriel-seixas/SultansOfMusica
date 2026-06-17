@@ -1,6 +1,11 @@
 import { error, fail, redirect } from "@sveltejs/kit";
 import { getToken } from "$lib/auth";
+<<<<<<< HEAD
 import { getProductById, updateProduct, updateInventory } from "$lib/somapi/client";
+=======
+import { getProductById, updateInventory, updateProduct } from "$lib/somapi/client";
+
+>>>>>>> 3bdffe4 (ZzZz)
 import { searchArtist } from "$lib/audiodb/client";
 import type { PageServerLoad, Actions } from "./$types";
 
@@ -58,6 +63,7 @@ export const actions: Actions = {
     if (!mainImageUrl) return fail(400, { error: "A imagem principal é obrigatória." });
 
     try {
+<<<<<<< HEAD
       const currentProduct = await getProductById(productId, token);
 
       const productChanged =
@@ -94,7 +100,27 @@ export const actions: Actions = {
       if (err?.status === 401) return fail(401, { error: "Autenticação inválida." });
       if (err?.status === 404) return fail(404, { error: "Produto não encontrado." });
       return fail(500, { error: err?.message || "Erro ao atualizar." });
+=======
+      // Atualiza os metadados do produto (título, preço, cover, etc)
+      await updateProduct(payload, token);
+
+      // Atualiza estoque via endpoint correto
+      // (PUT /inventory/update com { "product-id", "new-stock" })
+      await updateInventory(
+        { "product-id": productId, "new-stock": stock },
+        token,
+      );
+    } catch (err) {
+      const e = err as { status?: number; message?: string };
+
+      if (e?.status === 401) return fail(401, { error: "Autenticação inválida." });
+      if (e?.status === 404) return fail(404, { error: "Produto/Inventory não encontrado." });
+      return fail(500, { error: e?.message || "Erro ao atualizar produto/estoque." });
+>>>>>>> 3bdffe4 (ZzZz)
     }
+
+
+
 
     throw redirect(303, `/product/${productId}`);
   },

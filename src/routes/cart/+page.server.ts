@@ -1,6 +1,8 @@
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions } from '@sveltejs/kit';
-import { sellProduct } from '$lib/somapi/client';
+import { getAllSales, getSaleById, sellProduct } from '$lib/somapi/client';
+
+
 import type { SaleRequestInfo } from '$lib/somapi/types';
 import { getToken } from '$lib/auth';
 
@@ -35,16 +37,36 @@ export const actions: Actions = {
 
     try {
       const result = await sellProduct(payload, token);
-      // result deve conter { 'sale-id': number }
-      return { success: true, saleId: result['sale-id'] };
-    } catch (err: any) {
-      if (err?.status === 409) {
-        return fail(409, { error: 'Estoque insuficiente ou conflito.' });
+      const saleId = result['sale-id'];
+
+      // Validação/debug: confirma se a venda existe e se aparece em GET /sale/all
+      if (typeof saleId === 'number') {
+        await getSaleById(saleId, token);
+
+        await getAllSales(token);
       }
-      if (err?.status === 401) {
+
+
+      // Redireciona diretamente para o histórico (evita dependência do use:enhance)
+      throw redirect(303, '/historico');
+
+
+
+
+
+
+    } catch (err) {
+      const e = err as { status?: number; message?: string };
+
+      if (e?.status === 409) {
+        return fail(409, { error: 'Estoque insuficiente ou conflito.' });
+
+      }
+      if (e?.status === 401) {
         throw redirect(303, '/login');
       }
-      return fail(500, { error: err?.message || 'Erro ao processar venda.' });
+      return fail(500, { error: e?.message || 'Erro ao processar venda.' });
+
     }
   }
 };

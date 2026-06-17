@@ -18,7 +18,7 @@
   let productCode = $state(product['api-id']);   // código do produto
   let description = $state('');
   let asin = $state('');                          // não usado, mas mantido para compatibilidade
-  let releaseDate = $state(product['release-date'] ?? product.release_date ?? '');
+  let releaseDate = $state(product.release_date);
   let stock = $state(product.stock);
   let mainImageUrl = $state(product.cover);
 
