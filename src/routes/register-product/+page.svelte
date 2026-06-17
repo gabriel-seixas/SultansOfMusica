@@ -1,53 +1,9 @@
-<!-- src/routes/registrar-produto/+page.svelte -->
 <script lang="ts">
   import Header from '$lib/components/Header.svelte';
-  import { searchArtist } from '$lib/audiodb/client';
   import { enhance } from '$app/forms';
-  import { onDestroy } from 'svelte';
-let debounceTimer: ReturnType<typeof setTimeout>;
+  import type { ActionData } from './$types';
 
-async function fetchArtist() {
-  if (!artistName.trim()) {
-    artistApiId = '';
-    return;
-  }
-  try {
-    const artists = await searchArtist({ query: artistName });
-    if (artists.length > 0) {
-      const a = artists[0];
-      artistApiId = a.idArtist;
-      artistName = a.strArtist;
-      error = '';
-    } else {
-      artistApiId = '';
-      error = 'Artista não encontrado.';
-    }
-  } catch (e) {
-    error = 'Erro ao buscar artista.';
-    artistApiId = '';
-  }
-}
-
-// Dispara a busca após 500ms de inatividade
-function onArtistInput() {
-  clearTimeout(debounceTimer);
-  debounceTimer = setTimeout(fetchArtist, 500);
-}
-
-onDestroy(() => clearTimeout(debounceTimer));
-
-function handleEnhance() {
-  error = '';
-  success = '';
-  return async ({ result }) => {
-    if (result.type === 'success') {
-      success = 'Produto registrado com sucesso!';
-      // opcional: resetar campos
-    } else if (result.type === 'failure') {
-      error = result.data?.error || 'Erro desconhecido.';
-    }
-  };
-}
+  let { form }: { form: ActionData } = $props();
 
   let title = '';
   let artistName = '';
@@ -63,29 +19,26 @@ function handleEnhance() {
   let error = '';
   let success = '';
 
-  async function lookupArtist() {
-    if (!artistName.trim()) return;
-    try {
-      const artists = await searchArtist({ query: artistName });
-      if (artists.length > 0) {
-        const a = artists[0];
-        artistApiId = a.idArtist;
-        artistName = a.strArtist;
-      } else {
-        error = 'Artista não encontrado.';
+  function handleEnhance() {
+    error = '';
+    success = '';
+    return async ({ result }) => {
+      if (result.type === 'success') {
+        success = 'Produto registrado com sucesso!';
+      } else if (result.type === 'failure') {
+        error = result.data?.error ?? 'Erro desconhecido.';
       }
-    } catch (e) {
-      error = 'Erro ao buscar artista.';
-    }
+    };
   }
 </script>
 
 <Header />
 
 <div class="page">
-  <section class="product-page">
+  <!-- FORM agora envolve toda a área de conteúdo -->
+  <form method="POST" use:enhance={handleEnhance} class="product-page">
+    <!-- LEFT: Gallery -->
     <div class="gallery">
-      <!-- Imagem principal (visual, fora do form) -->
       <div class="main-image">
         {#if mainImageUrl}
           <img src={mainImageUrl} alt="Capa principal" />
@@ -95,17 +48,20 @@ function handleEnhance() {
             <i class="ph ph-link"></i>
           </div>
         {/if}
+        <!-- URL input agora dentro do form, com name -->
         <input
           type="url"
+          name="mainImageUrl"
           class="url-input"
           placeholder="Cole o link da imagem principal"
           bind:value={mainImageUrl}
+          required
         />
       </div>
     </div>
 
-    <!-- FORMULÁRIO PRINCIPAL (todos os dados vão aqui) -->
-    <form method="POST" use:enhance={handleEnhance} class="details">
+    <!-- RIGHT: Details -->
+    <div class="details">
       <div class="form-group">
         <label for="title">Nome do álbum</label>
         <input id="title" name="title" type="text" placeholder="Nome do álbum" bind:value={title} required />
@@ -113,18 +69,12 @@ function handleEnhance() {
 
       <div class="form-group">
         <label for="artistName">Artista/Banda</label>
-        <div class="artist-search">
-          <input id="artistName" name="artistName" type="text" placeholder="Artista/Banda"
-  bind:value={artistName}
-  on:input={onArtistInput} required />
-          <!-- <button type="button" on:click={lookupArtist} title="Buscar artista na TheAudioDB">
-            <i class="ph ph-magnifying-glass"></i>
-          </button> -->
-        </div>
-        {#if artistApiId}
-          <small>ID Artista: {artistApiId}</small>
-          <input type="hidden" name="artistApiId" value={artistApiId} />
-        {/if}
+        <input id="artistName" name="artistName" type="text" placeholder="Artista/Banda" bind:value={artistName} required />
+      </div>
+
+      <div class="form-group">
+        <label for="artistApiId">Artist API-ID (código único)</label>
+        <input id="artistApiId" name="artistApiId" type="text" placeholder="Ex: OKC-1997-001" bind:value={artistApiId} required />
       </div>
 
       <div class="price-box">
@@ -147,10 +97,7 @@ function handleEnhance() {
         <input id="stock" name="stock" type="number" placeholder="10" bind:value={stock} required />
       </div>
 
-      <!-- Campo oculto para a imagem -->
-      <input type="hidden" name="mainImageUrl" value={mainImageUrl} />
-
-      <!-- Outros campos opcionais -->
+      <!-- Campos opcionais (ocultos ou não enviados diretamente, mas mantidos como hidden) -->
       <input type="hidden" name="asin" value={asin} />
       <input type="hidden" name="description" value={description} />
 
@@ -162,8 +109,8 @@ function handleEnhance() {
       {/if}
 
       <button type="submit" class="buy-btn">Registrar Novo Produto</button>
-    </form>
-  </section>
+    </div>
+  </form>
 
   <footer class="footer">
     © 2026 Sultans of Music LTDA. Todos os direitos reservados.
@@ -171,6 +118,7 @@ function handleEnhance() {
 </div>
 
 <style>
+  /* seus estilos permanecem exatamente iguais */
   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Princess+Sofia&display=swap');
   @import url('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css');
   @import url('https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css');
@@ -202,11 +150,6 @@ function handleEnhance() {
     font-family:'Poppins', sans-serif; background:white;
   }
   .form-group textarea { min-height:120px; resize:none; }
-
-  .artist-search { display:flex; gap:8px; align-items:center; }
-  .artist-search button {
-    background:#ffcc00; border:none; border-radius:4px; padding:10px 12px; cursor:pointer;
-  }
 
   .price-box { margin-bottom:25px; }
   .price-box input {
