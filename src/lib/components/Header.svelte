@@ -15,9 +15,9 @@
   </nav>
 
 
-  <div class="logo">
-    Sultans of <span>Music</span>
-  </div>
+  <a class="logo" href="/">
+Sultans of <span>Music</span>
+</a>
 
   <form action="/search" method="GET" class="search-bar">
     <input
@@ -114,6 +114,7 @@
     font-family: 'Princess Sofia', cursive;
     font-size: 42px;
     margin: 0 20px;
+    text-decoration: none;
   }
   .logo span {
     color: #ffcc00;

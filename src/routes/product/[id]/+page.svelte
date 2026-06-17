@@ -1,25 +1,38 @@
 <script lang="ts">
-	import type { PageProps } from './$types';
-	import { formatPrice } from '$lib/util';
+  import type { PageProps } from './$types';
+  import { formatPrice } from '$lib/util';
+  import { cart } from '$lib/stores/cart';  // ← importe a store
 
-	let { data }: PageProps = $props();
-	let { product, albumCovers, relatedProducts, tracklist, albumDescription, albumYear } = data;
+  let { data }: PageProps = $props();
+  let { product, albumCovers, relatedProducts, tracklist, albumDescription, albumYear } = data;
 
-	let selectedCover = $state(product.cover);
-	let openPanel = $state<'tracks' | 'details' | null>(null);
+  let selectedCover = $state(product.cover);
+  let openPanel = $state<'tracks' | 'details' | null>(null);
 
-	function selectCover(url: string) {
-		selectedCover = url;
-	}
+  function selectCover(url: string) {
+    selectedCover = url;
+  }
 
-	function togglePanel(panel: 'tracks' | 'details') {
-		openPanel = openPanel === panel ? null : panel;
-	}
+  function togglePanel(panel: 'tracks' | 'details') {
+    openPanel = openPanel === panel ? null : panel;
+  }
 
-	async function addToCart() {
-		// TODO: implement cart logic
-		alert('Produto adicionado ao carrinho!');
-	}
+  // Função correta para adicionar ao carrinho
+  function addToCart() {
+    cart.update(items => {
+      const existing = items.find(i => i.product.id === product.id);
+      if (existing) {
+        // Aumenta a quantidade, respeitando o estoque
+        return items.map(i =>
+          i.product.id === product.id
+            ? { ...i, quantity: Math.min(i.quantity + 1, product.stock) }
+            : i
+        );
+      }
+      // Adiciona novo item com quantity 1
+      return [...items, { product, quantity: 1 }];
+    });
+  }
 </script>
 
 <section class="product-page">
@@ -63,7 +76,7 @@
 		<!-- BUTTONS -->
 		<div class="actions">
 			<button class="buy-btn" onclick={addToCart}> Adicionar ao Carrinho </button>
-			<button class="edit-btn"> Editar </button>
+			<a href={`/product/${product.id}/edit`}><button class="edit-btn"> Editar </button> </a>
 		</div>
 
 		{#if product.stock > 0}

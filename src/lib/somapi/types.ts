@@ -72,7 +72,7 @@ export interface GetProductResponse {
 	cover: string;
 	id: number;
 	price: number;
-	"release-date": string;
+	release_date?: string;
 	stock: number;
 	title: string;
 	type: string;
