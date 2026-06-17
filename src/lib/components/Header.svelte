@@ -14,10 +14,9 @@
     <a href="/catalog">Artistas</a>
   </nav>
 
-
   <a class="logo" href="/">
-Sultans of <span>Music</span>
-</a>
+    Sultans of <span>Music</span>
+  </a>
 
   <form action="/search" method="GET" class="search-bar">
     <input
@@ -31,7 +30,6 @@ Sultans of <span>Music</span>
       <i class="glyphicon glyphicon-search"></i>
     </button>
   </form>
-
 
   <div class="nav-right">
     <a href="/login" class="nav-icon" aria-label="Usuário">
@@ -54,60 +52,23 @@ Sultans of <span>Music</span>
     padding: 0 40px;
     border-top: 2px solid #ffcc00;
   }
+
   .nav-left {
     display: flex;
     gap: 25px;
     align-items: center;
   }
+
   .nav-left a {
     text-decoration: none;
     color: #ffcc00;
     font-size: 14px;
     transition: 0.3s;
   }
+
   .nav-left a:hover {
     opacity: 0.7;
   }
-
-  /* .search-bar {
-    display: flex;
-    align-items: center;
-    background: #1a1a1a;
-    border: 1px solid #ffcc00;
-    border-radius: 20px;
-    padding: 0 10px;
-    height: 36px;
-    width: 280px;
-    transition: border-color 0.3s;
-  }
-  .search-bar:focus-within {
-    border-color: #ffe066;
-  }
-  .search-bar input {
-    flex: 1;
-    background: transparent;
-    border: none;
-    color: white;
-    font-family: 'Poppins', sans-serif;
-    font-size: 13px;
-    padding: 5px 0;
-    outline: none;
-  }
-  .search-bar input::placeholder {
-    color: #aaa;
-  }
-  .search-bar button {
-    background: none;
-    border: none;
-    color: #ffcc00;
-    font-size: 16px;
-    cursor: pointer;
-    padding: 0 5px;
-    transition: opacity 0.3s;
-  }
-  .search-bar button:hover {
-    opacity: 0.7;
-  } */
 
   .logo {
     color: white;
@@ -116,6 +77,7 @@ Sultans of <span>Music</span>
     margin: 0 20px;
     text-decoration: none;
   }
+
   .logo span {
     color: #ffcc00;
   }
@@ -127,6 +89,7 @@ Sultans of <span>Music</span>
     align-items: center;
     font-size: 14px;
   }
+
   .nav-icon {
     color: #ffcc00;
     display: flex;
@@ -135,11 +98,12 @@ Sultans of <span>Music</span>
     text-decoration: none;
     transition: 0.3s;
   }
+
   .nav-icon:hover {
     opacity: 0.7;
   }
 
-   .search-bar {
+  .search-bar {
     display: flex;
     align-items: center;
     background: #1a1a1a;
@@ -150,9 +114,11 @@ Sultans of <span>Music</span>
     width: 280px;
     transition: border-color 0.3s;
   }
+
   .search-bar:focus-within {
     border-color: #ffe066;
   }
+
   .search-bar input {
     flex: 1;
     background: transparent;
@@ -163,9 +129,11 @@ Sultans of <span>Music</span>
     padding: 5px 0;
     outline: none;
   }
+
   .search-bar input::placeholder {
     color: #aaa;
   }
+
   .search-bar button {
     background: none;
     border: none;
@@ -175,6 +143,7 @@ Sultans of <span>Music</span>
     padding: 0 5px;
     transition: opacity 0.3s;
   }
+
   .search-bar button:hover {
     opacity: 0.7;
   }
@@ -186,18 +155,23 @@ Sultans of <span>Music</span>
       gap: 12px;
       padding: 15px 20px;
     }
+
     .search-bar {
       order: 2;
       width: 100%;
       max-width: 400px;
       margin: 0 auto;
     }
+
     .logo {
       order: 1;
       margin: 0;
     }
-    .nav-left, .nav-right {
+
+    .nav-left,
+    .nav-right {
       order: 3;
     }
   }
 </style>
+

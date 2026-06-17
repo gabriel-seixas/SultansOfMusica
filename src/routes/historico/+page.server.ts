@@ -8,7 +8,7 @@ export const load: PageServerLoad = async ({ cookies }) => {
   if (!token) throw redirect(303, '/login');
 
   try {
-    // A API /sale/all retorna diretamente um array de vendas
+   
     const sales = await getAllSales(token);
     return { sales: sales ?? [] };
   } catch (err: any) {

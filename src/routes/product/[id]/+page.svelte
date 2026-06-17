@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { PageProps } from './$types';
   import { formatPrice } from '$lib/util';
-  import { cart } from '$lib/stores/cart';  // ← importe a store
+  import { cart } from '$lib/stores/cart';
 
   let { data }: PageProps = $props();
   let { product, albumCovers, relatedProducts, tracklist, albumDescription, albumYear } = data;
@@ -17,26 +17,26 @@
     openPanel = openPanel === panel ? null : panel;
   }
 
-  // Função correta para adicionar ao carrinho
+  
   function addToCart() {
     cart.update(items => {
       const existing = items.find(i => i.product.id === product.id);
       if (existing) {
-        // Aumenta a quantidade, respeitando o estoque
+        
         return items.map(i =>
           i.product.id === product.id
             ? { ...i, quantity: Math.min(i.quantity + 1, product.stock) }
             : i
         );
       }
-      // Adiciona novo item com quantity 1
+      
       return [...items, { product, quantity: 1 }];
     });
   }
 </script>
 
 <section class="product-page">
-	<!-- LEFT: Gallery -->
+	
 	<div class="gallery">
 		<div class="main-image">
 			<img src={selectedCover} alt={product.title} />
@@ -55,7 +55,7 @@
 		</div>
 	</div>
 
-	<!-- RIGHT: Details -->
+	
 	<div class="details">
 		<h1>{product.title}</h1>
 		<h3>{product.artist}</h3>
@@ -65,15 +65,14 @@
 
 		<p class="description"></p>
 
-		<!-- FIX: Maybe remove this -->
-		<!-- COLORS (static for now) -->
+		
 		<!-- <div class="colors">
 			<div class="color black"></div>
 			<div class="color wine"></div>
 			<div class="color green"></div>
 		</div> -->
 
-		<!-- BUTTONS -->
+		
 		<div class="actions">
 			<button class="buy-btn" onclick={addToCart}> Adicionar ao Carrinho </button>
 			<a href={`/product/${product.id}/edit`}><button class="edit-btn"> Editar </button> </a>
@@ -85,7 +84,7 @@
 			<div class="stock out-of-stock">✘ Fora de estoque</div>
 		{/if}
 
-		<!-- ACCORDION -->
+		
 		<div class="accordion">
 			<div class="accordion-item" onclick={() => togglePanel('tracks')}>
 				<span>Lista de Faixas</span>
@@ -130,7 +129,7 @@
 	</div>
 </section>
 
-<!-- RELATED PRODUCTS -->
+
 <section class="related">
 	<!-- <h2>Produtos Relacionados</h2> -->
 	<div class="related-grid">
@@ -151,7 +150,7 @@
 </section>
 
 <style>
-	/* Scoped styles – same CSS you had, but inside <style> */
+	
 	* {
 		margin: 0;
 		padding: 0;

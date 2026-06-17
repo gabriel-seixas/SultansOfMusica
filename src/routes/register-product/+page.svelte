@@ -35,9 +35,9 @@
 <Header />
 
 <div class="page">
-  <!-- FORM agora envolve toda a área de conteúdo -->
+  
   <form method="POST" use:enhance={handleEnhance} class="product-page">
-    <!-- LEFT: Gallery -->
+    
     <div class="gallery">
       <div class="main-image">
         {#if mainImageUrl}
@@ -48,7 +48,7 @@
             <i class="ph ph-link"></i>
           </div>
         {/if}
-        <!-- URL input agora dentro do form, com name -->
+        
         <input
           type="url"
           name="mainImageUrl"
@@ -60,7 +60,7 @@
       </div>
     </div>
 
-    <!-- RIGHT: Details -->
+    
     <div class="details">
       <div class="form-group">
         <label for="title">Nome do álbum</label>
@@ -118,7 +118,7 @@
 </div>
 
 <style>
-  /* seus estilos permanecem exatamente iguais */
+  
   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Princess+Sofia&display=swap');
   @import url('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css');
   @import url('https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css');
