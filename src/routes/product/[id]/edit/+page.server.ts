@@ -1,6 +1,7 @@
 import { error, fail, redirect } from "@sveltejs/kit";
 import { getToken } from "$lib/auth";
-import { getProductById, updateProduct } from "$lib/somapi/client";
+import { getProductById, updateInventory, updateProduct } from "$lib/somapi/client";
+
 import { searchArtist } from "$lib/audiodb/client";
 import type { PageServerLoad, Actions } from "./$types";
 
@@ -71,12 +72,25 @@ export const actions: Actions = {
     };
 
     try {
+      // Atualiza os metadados do produto (título, preço, cover, etc)
       await updateProduct(payload, token);
-    } catch (err: any) {
-      if (err?.status === 401) return fail(401, { error: "Autenticação inválida." });
-      if (err?.status === 404) return fail(404, { error: "Produto não encontrado." });
-      return fail(500, { error: err?.message || "Erro ao atualizar." });
+
+      // Atualiza estoque via endpoint correto
+      // (PUT /inventory/update com { "product-id", "new-stock" })
+      await updateInventory(
+        { "product-id": productId, "new-stock": stock },
+        token,
+      );
+    } catch (err) {
+      const e = err as { status?: number; message?: string };
+
+      if (e?.status === 401) return fail(401, { error: "Autenticação inválida." });
+      if (e?.status === 404) return fail(404, { error: "Produto/Inventory não encontrado." });
+      return fail(500, { error: e?.message || "Erro ao atualizar produto/estoque." });
     }
+
+
+
 
     throw redirect(303, `/product/${productId}`);
   },

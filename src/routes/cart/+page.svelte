@@ -3,7 +3,7 @@
   import { cart, subtotal } from '$lib/stores/cart';
   import { enhance } from '$app/forms';
   import type { SubmitFunction } from '@sveltejs/kit';
-  import type { SaleRequestInfo } from '$lib/somapi/types';
+
 
   let error = '';
   let success = '';
@@ -33,19 +33,34 @@
   const handleEnhance: SubmitFunction = ({ cancel }) => {
     error = '';
     success = '';
+
     if ($cart.length === 0) {
       cancel();
       return;
     }
-    return async ({ result, update }) => {
-      if (result.type === 'success') {
-        success = 'Pedido finalizado com sucesso!';
-        saleId = result.data?.saleId;
-        cart.set([]);
-        await update(); // limpa o formulário
-      } else if (result.type === 'failure') {
-        error = result.data?.error || 'Erro ao finalizar pedido.';
+
+    return async ({ result }) => {
+      // Quando o server action faz redirect, o enhance pode não preencher result.data.
+      // Então, independente do retorno, garantimos que o carrinho limpe.
+      cart.set([]);
+
+      const data = (result as any)?.data as { saleId?: number; error?: string } | undefined;
+
+      if (data?.error) {
+        error = data.error;
+        success = '';
+        return;
       }
+
+      // Mensagem (quando disponível)
+      if (data?.saleId !== undefined && data?.saleId !== null) {
+        success = 'Pedido finalizado com sucesso!';
+        saleId = data.saleId;
+        return;
+      }
+
+      // Sem dados de retorno: ao menos não deixa o usuário preso no carrinho.
+      success = 'Pedido finalizado com sucesso!';
     };
   };
 </script>
@@ -61,7 +76,8 @@
       <a href="/catalog" class="continue">Adicionar Produtos →</a>
     {:else}
       <!-- Lista de itens -->
-      {#each $cart as item}
+      {#each $cart as item (item.product.id)}
+
         <div class="cart-item">
           <div class="item-left">
             <img src={item.product.cover || '/placeholder.jpg'} alt={item.product.title} />
@@ -78,12 +94,14 @@
           <div class="item-actions">
             <select
               value={item.quantity}
-              on:change={(e) => updateQuantity(item.product.id, parseInt(e.target.value))}
+              on:change={(e) => updateQuantity(item.product.id, parseInt((e.currentTarget as HTMLSelectElement).value))}
+
               disabled={item.product.stock === 0}
             >
-              {#each Array.from({ length: Math.min(item.product.stock, 10) || 1 }, (_, i) => i + 1) as qty}
+              {#each Array.from({ length: Math.min(item.product.stock, 10) || 1 }, (_, i) => i + 1) as qty (qty)}
                 <option value={qty}>{qty}</option>
               {/each}
+
             </select>
             <button type="button" class="remove-btn" on:click={() => removeItem(item.product.id)}>
               Remover
@@ -124,7 +142,8 @@
         </button>
       </form>
 
-      <a href="/catalogo" class="continue">ou Adicionar Mais Produtos →</a>
+      <a href="/catalogo" class="continue" aria-label="Adicionar mais produtos">ou Adicionar Mais Produtos →</a>
+
     {/if}
   </main>
 
