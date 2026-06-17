@@ -5,7 +5,7 @@
   let rawSales = $derived(data.sales);
   let error = $derived(data.error);
 
-  // Garantia de array
+  
   let sales = $derived(Array.isArray(rawSales) ? rawSales : []);
 
   let currentPage = $state(1);

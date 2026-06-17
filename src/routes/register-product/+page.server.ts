@@ -51,7 +51,7 @@ export const actions: Actions = {
       "artist-api-id": artistApiId,
       "artist-name": artistName,
       cover: mainImageUrl,
-      price: priceInCents, // já está em centavos
+      price: priceInCents, 
       release_date: releaseDate,
       stock: stock,
       title: title,

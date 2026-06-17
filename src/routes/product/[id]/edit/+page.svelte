@@ -10,22 +10,21 @@
   let product = $derived(data.product);
   let initialArtistApiId = $derived(data.artistApiId);
 
-  // Inicialização correta dos campos
   let title = $state(product.title);
   let artistName = $state(product.artist);
-  let artistApiId = $state(initialArtistApiId);  // ID real do artista
+  let artistApiId = $state(initialArtistApiId);
   let price = $state(product.price / 100);
-  let productCode = $state(product['api-id']);   // código do produto
+  let productCode = $state(product['api-id']);
   let description = $state('');
-  let asin = $state('');                          // não usado, mas mantido para compatibilidade
+  let asin = $state('');
   let releaseDate = $state(product.release_date);
   let stock = $state(product.stock);
   let mainImageUrl = $state(product.cover);
+  let typeId = $state(product['type-id'] || 1); 
 
   let error = $state(form?.error ?? '');
   let success = $state(form?.success ?? '');
 
-  // Busca automática do artista (debounce)
   let debounceTimer: ReturnType<typeof setTimeout>;
 
   async function fetchArtist() {
@@ -38,7 +37,7 @@
       if (artists.length > 0) {
         const a = artists[0];
         artistApiId = a.idArtist;
-        artistName = a.strArtist;   // padroniza o nome
+        artistName = a.strArtist;
         error = '';
       } else {
         artistApiId = '';
@@ -69,8 +68,6 @@
     };
   }
 </script>
-
-<!-- <Header /> -->
 
 <div class="page">
   <form method="POST" use:enhance={handleEnhance} class="product-page">
@@ -140,6 +137,17 @@
         />
       </div>
 
+      <!-- Novo campo: tipo de mídia -->
+      <div class="form-group">
+        <label for="typeId">Formato</label>
+        <select id="typeId" name="typeId" bind:value={typeId}>
+          <option value={1}>CD</option>
+          <option value={2}>Vinil</option>
+          <option value={3}>VHS</option>
+          <option value={4}>Fita Cassete</option>
+        </select>
+      </div>
+
       <div class="form-group">
         <label for="productCode">API‑ID (código único)</label>
         <input
@@ -183,10 +191,6 @@
     </div>
   </form>
 </div>
-  <!-- <footer class="footer">
-    © 2026 Sultans of Music LTDA. Todos os direitos reservados.
-  </footer> -->
-
 
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Princess+Sofia&display=swap');
@@ -215,7 +219,8 @@
   .details { width:520px; }
   .form-group { margin-bottom:20px; }
   .form-group label, .price-box label { display:block; margin-bottom:8px; font-weight:600; }
-  .form-group input, .form-group textarea, .field input {
+  .form-group input, .form-group textarea, .field input,
+  .form-group select { 
     width:100%; border:1px solid #d9d9d9; border-radius:4px; padding:12px;
     font-family:'Poppins', sans-serif; background:white;
   }

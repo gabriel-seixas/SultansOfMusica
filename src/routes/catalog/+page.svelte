@@ -4,13 +4,13 @@
 
   let { data }: { data: PageData } = $props();
 
-  // Estados reativos
+  
   let selectedDecades = $state<string[]>([]);
   let selectedCategories = $state<string[]>([]);
   let currentPage = $state(1);
   const itemsPerPage = 12;
 
-  // Derivados
+  
   let allProducts = $derived(data.products ?? []);
 
   let filteredProducts = $derived(
@@ -47,7 +47,7 @@
     [...new Set(allProducts.map(p => p.type).filter(Boolean))].sort()
   );
 
-  // Funções auxiliares
+  
   function toggleDecade(decade: string) {
     if (selectedDecades.includes(decade)) {
       selectedDecades = selectedDecades.filter(d => d !== decade);
@@ -74,21 +74,21 @@
 <Header />
 
 <div class="page">
-  <!-- BREADCRUMB -->
+  
   <section class="breadcrumb">
     <a href="/">Início</a>
     <span>/</span>
     <p>Catálogo</p>
   </section>
 
-  <!-- BANNER -->
+  
   <section class="artist-banner">
     <h1>TODOS OS PRODUTOS</h1>
     <p>Explore nossa coleção completa</p>
   </section>
 
   <main class="container">
-    <!-- SIDEBAR COM FILTROS -->
+    
     <aside class="sidebar">
       <div class="filter-group">
         <h3>Década</h3>
@@ -119,7 +119,7 @@
       </div>
     </aside>
 
-    <!-- GRID DE PRODUTOS -->
+    
     <section class="products">
       {#if data.error}
         <div class="alert error">{data.error}</div>

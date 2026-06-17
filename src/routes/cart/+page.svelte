@@ -40,8 +40,8 @@
     }
 
     return async ({ result }) => {
-      // Quando o server action faz redirect, o enhance pode não preencher result.data.
-      // Então, independente do retorno, garantimos que o carrinho limpe.
+      
+      
       cart.set([]);
 
       const data = (result as any)?.data as { saleId?: number; error?: string } | undefined;
@@ -52,14 +52,14 @@
         return;
       }
 
-      // Mensagem (quando disponível)
+      
       if (data?.saleId !== undefined && data?.saleId !== null) {
         success = 'Pedido finalizado com sucesso!';
         saleId = data.saleId;
         return;
       }
 
-      // Sem dados de retorno: ao menos não deixa o usuário preso no carrinho.
+      
       success = 'Pedido finalizado com sucesso!';
     };
   };
@@ -75,7 +75,7 @@
       <p class="empty-cart">Seu carrinho está vazio.</p>
       <a href="/catalog" class="continue">Adicionar Produtos →</a>
     {:else}
-      <!-- Lista de itens -->
+      
       {#each $cart as item (item.product.id)}
 
         <div class="cart-item">
@@ -126,7 +126,7 @@
         </div>
       </section>
 
-      <!-- Formulário para finalizar -->
+      
       <form method="POST" action="?/checkout" use:enhance={handleEnhance}>
         <input type="hidden" name="items" value={JSON.stringify(saleItems)} />
 

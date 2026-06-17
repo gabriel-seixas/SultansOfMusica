@@ -3,6 +3,7 @@ import { getAllProducts } from '$lib/somapi/client';
 import { getToken } from '$lib/auth';
 import type { GetProductResponse } from '$lib/somapi/types';
 
+
 export async function load({ cookies }) {
   const token = getToken(cookies);
   if (!token) throw redirect(303, '/login');

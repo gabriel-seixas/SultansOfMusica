@@ -12,7 +12,6 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
   const product = await getProductById(productId, token);
   if (!product) throw error(404, "Produto não encontrado.");
 
-  // Busca o ID do artista na TheAudioDB
   let artistApiId = "";
   if (product.artist) {
     try {
@@ -44,6 +43,7 @@ export const actions: Actions = {
     const releaseDate = formData.get("releaseDate")?.toString().trim() ?? "";
     const stockRaw = formData.get("stock")?.toString() ?? "0";
     const mainImageUrl = formData.get("mainImageUrl")?.toString().trim() ?? "";
+    const typeIdRaw = formData.get("typeId")?.toString() ?? "1"; // Padrão CD
 
     if (!title || !artistName || !artistApiId || !priceRaw || !productCode || !releaseDate) {
       return fail(400, { error: "Preencha todos os campos obrigatórios." });
@@ -95,9 +95,6 @@ export const actions: Actions = {
       if (err?.status === 404) return fail(404, { error: "Produto não encontrado." });
       return fail(500, { error: err?.message || "Erro ao atualizar." });
     }
-
-
-
 
     throw redirect(303, `/product/${productId}`);
   },
