@@ -13,7 +13,7 @@
 	<title>Sultans of Music — Entrar</title>
 </svelte:head>
 
-<div class="container">
+<div class="login-page">
 	<!-- LEFT SIDE -->
 	<div class="left">
 		<div>
@@ -69,7 +69,7 @@
 			<h2>Entrar</h2>
 
 			<form method="post">
-				<div class="input-group">
+				<div class="login-input-group">
 					<label for="email">Digite o seu nome de usuário ou endereço de e-mail</label>
 					<input
 						type="text"
@@ -80,7 +80,7 @@
 					/>
 				</div>
 
-				<div class="input-group">
+				<div class="login-input-group">
 					<label for="password">Digite a sua senha</label>
 					<input
 						type="password"
@@ -99,7 +99,7 @@
 					<p class="error-msg">{form.error}</p>
 				{/if}
 
-				<button type="submit" class="btn">Acessar</button>
+				<button type="submit" class="login-btn">Acessar</button>
 			</form>
 		</div>
 	</div>
@@ -112,7 +112,7 @@
   padding: 0;
 }
 
-.container {
+.login-page {
   width: 100%;
   min-height: 100vh;
   display: flex;
@@ -129,7 +129,7 @@
 		font-family: 'Poppins'
 	}
 
-	.container {
+	.login-page {
 		width: 100%;
 		height: 100vh;
 		display: flex;
@@ -138,7 +138,7 @@
 		background: linear-gradient(to bottom, transparent 0%, transparent 55%, black 55%, black 100%);
 	}
 
-	.container::before {
+	.login-page::before {
 		content: '';
 		position: absolute;
 		inset: 0;
@@ -307,18 +307,18 @@
 		margin-bottom: 30px;
 	}
 
-	.input-group {
+	.login-input-group {
 		margin-bottom: 25px;
 	}
 
-	.input-group label {
+	.login-input-group label {
 		display: block;
 		margin-bottom: 10px;
 		font-size: 15px;
 		color: #222;
 	}
 
-	.input-group input {
+	.login-input-group input {
 		width: 100%;
 		height: 55px;
 		border: 1px solid #ccc;
@@ -330,7 +330,7 @@
 		background: #fff;
 	}
 
-	.input-group input:focus {
+	.login-input-group input:focus {
 		border-color: #7aa7ff;
 		box-shadow: 0 0 0 3px rgba(122, 167, 255, 0.2);
 	}
@@ -354,7 +354,7 @@
 		margin-bottom: 15px;
 	}
 
-	.btn {
+	.login-btn {
 		width: 100%;
 		height: 58px;
 		border: none;
@@ -367,14 +367,14 @@
 		transition: 0.3s;
 	}
 
-	.btn:hover {
+	.login-btn:hover {
 		opacity: 0.9;
 		transform: scale(1.01);
 	}
 
 	/* RESPONSIVE */
 	@media (max-width: 1100px) {
-		.container {
+		.login-page {
 			flex-direction: column;
 			overflow: auto;
 		}

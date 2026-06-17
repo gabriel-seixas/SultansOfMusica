@@ -142,7 +142,7 @@
         </button>
       </form>
 
-      <a href="/catalogo" class="continue" aria-label="Adicionar mais produtos">ou Adicionar Mais Produtos →</a>
+      <a href="/catalog" class="continue" aria-label="Adicionar mais produtos">ou Adicionar Mais Produtos →</a>
 
     {/if}
   </main>
@@ -160,7 +160,9 @@
 .page {
   font-family: 'Poppins', sans-serif;
   background: #f5f5f5;
-  min-height: 100vh;
+  min-height: calc(100vh - 70px);
+  display: flex;
+  flex-direction: column;
 }
 
   .page :global(*) {
@@ -168,7 +170,7 @@
   }
 
   .cart-container {
-    max-width:1200px; margin:auto; padding:60px 40px 80px;
+    max-width:1200px; width:100%; margin:auto; padding:60px 40px 80px; flex:1;
   }
   .cart-container h1 {
     font-size:56px; margin-bottom:50px;

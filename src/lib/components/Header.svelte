@@ -31,7 +31,7 @@ Sultans of <span>Music</span>
 
 
   <div class="nav-right">
-    <a href="/login" class="nav-icon" aria-label="Usuário">
+    <a href="/login" class="nav-icon" aria-label="Usuário" data-sveltekit-preload-data="off">
       <i class="glyphicon glyphicon-user"></i>
     </a>
     <a href="/cart" class="nav-icon" aria-label="Carrinho" data-sveltekit-preload-data="off">
