@@ -108,12 +108,17 @@
 <style>
 	:global(html),
 	:global(body) {
-		margin: 0;
-		padding: 0;
-		height: 100%;
-		overflow: hidden;
-	}
+  margin: 0;
+  padding: 0;
+}
 
+.container {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+}
 	:global(#svelte) {
 		height: 100%;
 	}
@@ -121,13 +126,7 @@
 		margin: 0;
 		padding: 0;
 		box-sizing: border-box;
-		font-family: 'Poppins', sans-serif;
-	}
-
-	body {
-		min-height: 100vh;
-		background: #000;
-		overflow: hidden;
+		font-family: 'Poppins'
 	}
 
 	.container {

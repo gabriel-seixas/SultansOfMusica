@@ -1,6 +1,6 @@
 import { error, fail, redirect } from "@sveltejs/kit";
 import { getToken } from "$lib/auth";
-import { getProductById, updateProduct } from "$lib/somapi/client";
+import { getProductById, updateProduct, updateInventory } from "$lib/somapi/client";
 import { searchArtist } from "$lib/audiodb/client";
 import type { PageServerLoad, Actions } from "./$types";
 
@@ -57,21 +57,39 @@ export const actions: Actions = {
 
     if (!mainImageUrl) return fail(400, { error: "A imagem principal é obrigatória." });
 
-    const payload = {
-      "product-id": productId,
-      "api-id": productCode,
-      "artist-api-id": artistApiId,          // ID correto do artista
-      "artist-name": artistName,
-      cover: mainImageUrl,
-      price: priceInCents,
-      release_date: releaseDate,
-      stock: stock,
-      title: title,
-      "type-id": 1,
-    };
-
     try {
-      await updateProduct(payload, token);
+      const currentProduct = await getProductById(productId, token);
+
+      const productChanged =
+        title !== currentProduct.title ||
+        artistName !== currentProduct.artist ||
+        productCode !== currentProduct["api-id"] ||
+        mainImageUrl !== currentProduct.cover ||
+        priceInCents !== currentProduct.price ||
+        releaseDate !== (currentProduct.release_date ?? "");
+
+      const stockChanged = stock !== currentProduct.stock;
+
+      if (productChanged) {
+        await updateProduct({
+          "product-id": productId,
+          "api-id": productCode,
+          "artist-api-id": artistApiId,
+          "artist-name": artistName,
+          cover: mainImageUrl,
+          price: priceInCents,
+          release_date: releaseDate,
+          title,
+          "type-id": 1,
+        }, token);
+      }
+
+      if (stockChanged) {
+        await updateInventory({
+          "product-id": productId,
+          "new-stock": stock,
+        }, token);
+      }
     } catch (err: any) {
       if (err?.status === 401) return fail(401, { error: "Autenticação inválida." });
       if (err?.status === 404) return fail(404, { error: "Produto não encontrado." });

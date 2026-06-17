@@ -138,8 +138,15 @@
   @import url('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css');
   @import url('https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css');
 
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family:'Poppins', sans-serif; background:#f5f5f5; }
+.page {
+  font-family: 'Poppins', sans-serif;
+  background: #f5f5f5;
+  min-height: 100vh;
+}
+
+  .page :global(*) {
+  box-sizing: border-box;
+  }
 
   .cart-container {
     max-width:1200px; margin:auto; padding:60px 40px 80px;

@@ -4,9 +4,6 @@
 
 <svelte:head>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Princess+Sofia&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </svelte:head>
 
 <header class="header">
@@ -37,7 +34,7 @@ Sultans of <span>Music</span>
     <a href="/login" class="nav-icon" aria-label="Usuário">
       <i class="glyphicon glyphicon-user"></i>
     </a>
-    <a href="/cart" class="nav-icon" aria-label="Carrinho">
+    <a href="/cart" class="nav-icon" aria-label="Carrinho" data-sveltekit-preload-data="off">
       <i class="glyphicon glyphicon-shopping-cart"></i>
     </a>
   </div>
