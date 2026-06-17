@@ -96,6 +96,9 @@ export const actions: Actions = {
       return fail(500, { error: err?.message || "Erro ao atualizar." });
     }
 
+
+
+
     throw redirect(303, `/product/${productId}`);
   },
 };
