@@ -4,6 +4,7 @@ import { createProduct } from "$lib/somapi/client";
 
 export const actions: Actions = {
   default: async ({ request, cookies }) => {
+    console.log("recebido");
     const formData = await request.formData();
 
 
@@ -37,7 +38,7 @@ export const actions: Actions = {
     }
 
     
-    const authToken = cookies.get("som-jwt-token");
+    const authToken = cookies.get("som_jwt");
     if (!authToken) {
       return fail(401, { error: "Usuário não autenticado. Faça login primeiro." });
     }

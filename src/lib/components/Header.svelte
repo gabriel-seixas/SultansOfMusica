@@ -11,7 +11,7 @@
 
 <header class="header">
   <nav class="nav-left">
-    <a href="/category/artistas">Artistas</a>
+    <a href="/catalog">Artistas</a>
   </nav>
 
 
@@ -69,7 +69,7 @@
     opacity: 0.7;
   }
 
-  .search-bar {
+  /* .search-bar {
     display: flex;
     align-items: center;
     background: #1a1a1a;
@@ -107,7 +107,7 @@
   }
   .search-bar button:hover {
     opacity: 0.7;
-  }
+  } */
 
   .logo {
     color: white;
@@ -135,6 +135,46 @@
     transition: 0.3s;
   }
   .nav-icon:hover {
+    opacity: 0.7;
+  }
+
+   .search-bar {
+    display: flex;
+    align-items: center;
+    background: #1a1a1a;
+    border: 1px solid #ffcc00;
+    border-radius: 20px;
+    padding: 0 10px;
+    height: 36px;
+    width: 280px;
+    transition: border-color 0.3s;
+  }
+  .search-bar:focus-within {
+    border-color: #ffe066;
+  }
+  .search-bar input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    padding: 5px 0;
+    outline: none;
+  }
+  .search-bar input::placeholder {
+    color: #aaa;
+  }
+  .search-bar button {
+    background: none;
+    border: none;
+    color: #ffcc00;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 0 5px;
+    transition: opacity 0.3s;
+  }
+  .search-bar button:hover {
     opacity: 0.7;
   }
 

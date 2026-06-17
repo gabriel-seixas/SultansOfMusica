@@ -3,27 +3,66 @@
   import Header from '$lib/components/Header.svelte';
   import { searchArtist } from '$lib/audiodb/client';
   import { enhance } from '$app/forms';
+  import { onDestroy } from 'svelte';
+let debounceTimer: ReturnType<typeof setTimeout>;
 
-  // ── Campos principais ──
+async function fetchArtist() {
+  if (!artistName.trim()) {
+    artistApiId = '';
+    return;
+  }
+  try {
+    const artists = await searchArtist({ query: artistName });
+    if (artists.length > 0) {
+      const a = artists[0];
+      artistApiId = a.idArtist;
+      artistName = a.strArtist;
+      error = '';
+    } else {
+      artistApiId = '';
+      error = 'Artista não encontrado.';
+    }
+  } catch (e) {
+    error = 'Erro ao buscar artista.';
+    artistApiId = '';
+  }
+}
+
+// Dispara a busca após 500ms de inatividade
+function onArtistInput() {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(fetchArtist, 500);
+}
+
+onDestroy(() => clearTimeout(debounceTimer));
+
+function handleEnhance() {
+  error = '';
+  success = '';
+  return async ({ result }) => {
+    if (result.type === 'success') {
+      success = 'Produto registrado com sucesso!';
+      // opcional: resetar campos
+    } else if (result.type === 'failure') {
+      error = result.data?.error || 'Erro desconhecido.';
+    }
+  };
+}
+
   let title = '';
   let artistName = '';
   let artistApiId = '';
   let price = 0;
-  let productCode = '';       // api-id (será enviado como hidden)
+  let productCode = '';
   let description = '';
   let releaseDate = '';
   let asin = '';
   let stock = 1;
-
-  // ── URLs das imagens ──
   let mainImageUrl = '';
 
-  // ── Estados ──
-  let loading = false;
   let error = '';
-  let success = false;
+  let success = '';
 
-  // ── Buscar artista na TheAudioDB ──
   async function lookupArtist() {
     if (!artistName.trim()) return;
     try {
@@ -39,35 +78,14 @@
       error = 'Erro ao buscar artista.';
     }
   }
-
-  // ── Lógica do enhance ──
-  function handleEnhance() {
-    loading = true;
-    error = '';
-    success = false;
-    return async ({ result }) => {
-      loading = false;
-      if (result.type === 'success') {
-        success = true;
-        // Opcional: redirecionar ou resetar formulário
-        // resetForm();
-      } else if (result.type === 'failure') {
-        error = result.data?.error || 'Erro desconhecido.';
-      }
-    };
-  }
-
-  // (Opcional) função de reset, se quiser limpar após sucesso
-  // function resetForm() { ... }
 </script>
 
 <Header />
 
 <div class="page">
   <section class="product-page">
-    <!-- GALERIA (campos visuais, não enviados diretamente) -->
     <div class="gallery">
-      <!-- Imagem principal -->
+      <!-- Imagem principal (visual, fora do form) -->
       <div class="main-image">
         {#if mainImageUrl}
           <img src={mainImageUrl} alt="Capa principal" />
@@ -84,100 +102,58 @@
           bind:value={mainImageUrl}
         />
       </div>
-
-      <!-- Detalhes do Produto (visuais) -->
-      <div class="product-extra">
-        <!-- <h2>Detalhes do Produto</h2>
-        <textarea
-          placeholder="Adicionar descrição do produto."
-          bind:value={description}
-        ></textarea> -->
-        <div class="info-grid">
-          <div class="field">
-            <label>Data de Lançamento</label>
-            <input
-              type="text"
-              placeholder="4 de Fevereiro de 1977"
-              bind:value={releaseDate}
-            />
-          </div>
-          <div class="field">
-            <label>API-ID</label>
-            <input type="text" placeholder="B0D5JTCRH2" bind:value={asin} />
-          </div>
-          <div class="field">
-            <label>Estoque</label>
-            <input type="number" placeholder="10" bind:value={stock} />
-          </div>
-        </div>
-      </div>
     </div>
 
-    <!-- FORMULÁRIO PRINCIPAL (enviado ao servidor) -->
+    <!-- FORMULÁRIO PRINCIPAL (todos os dados vão aqui) -->
     <form method="POST" use:enhance={handleEnhance} class="details">
-      <!-- Campos visíveis do formulário -->
       <div class="form-group">
-        <label for="title">Nome</label>
-        <input
-          id="title"
-          name="title"
-          type="text"
-          placeholder="Nome do álbum"
-          bind:value={title}
-          required
-        />
+        <label for="title">Nome do álbum</label>
+        <input id="title" name="title" type="text" placeholder="Nome do álbum" bind:value={title} required />
       </div>
 
       <div class="form-group">
         <label for="artistName">Artista/Banda</label>
         <div class="artist-search">
-          <input
-            id="artistName"
-            name="artistName"
-            type="text"
-            placeholder="Artista/Banda"
-            bind:value={artistName}
-            required
-          />
-          <button
-            type="button"
-            on:click={lookupArtist}
-            title="Buscar artista na TheAudioDB"
-          >
+          <input id="artistName" name="artistName" type="text" placeholder="Artista/Banda"
+  bind:value={artistName}
+  on:input={onArtistInput} required />
+          <!-- <button type="button" on:click={lookupArtist} title="Buscar artista na TheAudioDB">
             <i class="ph ph-magnifying-glass"></i>
-          </button>
+          </button> -->
         </div>
         {#if artistApiId}
           <small>ID Artista: {artistApiId}</small>
+          <input type="hidden" name="artistApiId" value={artistApiId} />
         {/if}
       </div>
 
       <div class="price-box">
         <label for="price">Preço</label>
-        <input
-          id="price"
-          name="price"
-          type="number"
-          step="0.01"
-          min="0"
-          placeholder="0.00"
-          bind:value={price}
-          required
-        />
+        <input id="price" name="price" type="number" step="0.01" min="0" placeholder="0.00" bind:value={price} required />
       </div>
 
-      <!-- Campos ocultos para dados que estão na galeria -->
-      <input type="hidden" name="productCode" value={productCode} />
-      <input type="hidden" name="description" value={description} />
-      <input type="hidden" name="releaseDate" value={releaseDate} />
-      <input type="hidden" name="asin" value={asin} />
-      <input type="hidden" name="stock" value={stock} />
-      <input type="hidden" name="mainImageUrl" value={mainImageUrl} />
-      {#if artistApiId}
-        <input type="hidden" name="artistApiId" value={artistApiId} />
-      {/if}
+      <div class="form-group">
+        <label for="productCode">API-ID (código único)</label>
+        <input id="productCode" name="productCode" type="text" placeholder="Ex: OKC-1997-001" bind:value={productCode} required />
+      </div>
 
-      <!-- Mensagens de feedback -->
+      <div class="form-group">
+        <label for="releaseDate">Data de Lançamento</label>
+        <input id="releaseDate" name="releaseDate" type="text" placeholder="AAAA-MM-DD" bind:value={releaseDate} required />
+      </div>
+
+      <div class="form-group">
+        <label for="stock">Estoque</label>
+        <input id="stock" name="stock" type="number" placeholder="10" bind:value={stock} required />
+      </div>
+
+      <!-- Campo oculto para a imagem -->
+      <input type="hidden" name="mainImageUrl" value={mainImageUrl} />
+
+      <!-- Outros campos opcionais -->
+      <input type="hidden" name="asin" value={asin} />
+      <input type="hidden" name="description" value={description} />
+
       {#if error}
         <div class="alert error">{error}</div>
       {/if}
@@ -185,14 +161,7 @@
         <div class="alert success">Produto registrado com sucesso!</div>
       {/if}
 
-      <button type="submit" class="buy-btn" disabled={loading}>
-        {loading ? 'Enviando...' : 'Registrar Novo Produto'}
-      </button>
-
-      <!-- Accordion decorativo (mantido fora do fluxo de envio) -->
-      <div class="accordion">
-        <!-- Itens comentados -->
-      </div>
+      <button type="submit" class="buy-btn">Registrar Novo Produto</button>
     </form>
   </section>
 
